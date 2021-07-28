@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const port = 80;
 const ejs = require('ejs');
 
 var array = []
@@ -35,4 +36,6 @@ app.get('/submit', (req, res) => {
   res.redirect('/');
 })
 
-module.exports = app;
+app.listen(port, () => {
+  console.log(`App listening at http://localhost:${port}`);
+})
