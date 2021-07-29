@@ -18,10 +18,18 @@ const server = express()
 
 const io = socketIO(server);
 
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
 var array = []
 
 app.use('/views', express.static('views'));
 app.use('/socket.io', express.static('socket.io'));
+app.use(limiter);
 
 function filterStr(str){
   str = filter.clean(str);
