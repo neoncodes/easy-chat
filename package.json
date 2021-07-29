@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "filter": "^0.1.1",
     "fs": "0.0.1-security",
+    "htmlencode": "0.0.4",
     "http": "0.0.1-security",
     "path": "^0.12.7",
     "profanity": "0.0.2",
