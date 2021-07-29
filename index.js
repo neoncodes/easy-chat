@@ -2,42 +2,51 @@
 
 const express = require('express');
 const path = require('path');
+const PORT = 80;
+
+// App setup
 const app = express();
-const port = 80;
-const ejs = require('ejs');
+const socketIO = require('socket.io');
+
+const server = express()
+  .use(app)
+  .listen(PORT, () => console.log(`Listening Socket on ${ PORT }`));
+
+const io = socketIO(server);
 
 var array = []
 
 app.use('/views', express.static('views'));
-app.set('view engine', 'ejs')
+app.use('/socket.io', express.static('socket.io'));
 
-function messageHandler(req, ip){
+
+
+function messageHandler(req){
   let message = req.query.message;
+  let name = req.query.name;
 
   if(!message){
     return false;
   }
 
-  array.push(ip+": "+message);
+  message = name+": "+message
+
+  array.push(message);
+
+  io.emit('message', message);
+
+  console.log(array);
 }
 
 app.get('/', (req, res) => {
-  console.log(req.query)
-  res.render('index', {
-    listItems: array
-  })
+  res.sendFile(path.join(__dirname, 'views/index.html'));
+})
+
+app.get('/messages', (req, res) => {
+  res.send(array);
 })
 
 app.get('/submit', (req, res) => {
-  var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
-  if (ip.substr(0, 7) == "::ffff:") {
-    ip = ip.substr(7)
-  }
-
-  messageHandler(req, ip);
-  res.redirect('/');
-})
-
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+  messageHandler(req);
+  res.redirect('/?'+req.query.name);
 })

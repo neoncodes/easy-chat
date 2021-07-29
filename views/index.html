@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <title>Message System</title>
+        <link rel="stylesheet" href="views/style.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    </head>
+    <body class="text-center">
+
+        <form class="form-signin" action="/submit" method="get">
+            <div class="w-100" id="container">
+                <ul class="list-group" id="messages">
+                
+                </ul>
+            </div> 
+
+            <label for="inputEmail" class="sr-only">Name</label>
+            <input type="text" id="name1" class="form-control" name="name" placeholder="Username" required="">
+            <label for="inputPassword" class="sr-only">Message</label>
+            <input type="text" id="message1" class="form-control" name="message" placeholder="Message" required="" autofocus="">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+        </form>
+
+        <script>                
+            var socket = io();
+
+            function scrollUpdate() {
+                let container = document.getElementById('container');
+                container.scrollTop = container.scrollHeight; 
+            }
+
+            function addMessages(message){
+                $("#messages").append(`
+                    <li class="list-group-item"> ${message} </li>`
+                )
+
+                scrollUpdate();
+            }
+
+            function getMessages(){
+                $.get('/messages', (data) => {
+                    data.forEach(addMessages);
+                })
+            }
+
+            /*function foo1() {
+                var paras = document.getElementsByClassName('weirdClass');
+                while(paras[0]) {
+                    paras[0].parentNode.removeChild(paras[0]);
+                }
+
+                getMessages();
+                setTimeout(foo1, 5000);
+            }*/
+
+            socket.on('message', function(message) {
+                addMessages(message);
+            });
+
+            function starter(){
+                getMessages();
+
+                let urlName = window.location.search.split("?");
+                if(urlName[1]){
+                    document.getElementById("name1").value = urlName[1]
+                }
+            }
+
+            starter();
+        </script>
+    </body>
+</html>
