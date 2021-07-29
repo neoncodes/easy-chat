@@ -4,6 +4,9 @@ const express = require('express');
 const path = require('path');
 const PORT = 80;
 
+const Filter = require('bad-words');
+filter = new Filter();
+
 // App setup
 const app = express();
 const socketIO = require('socket.io');
@@ -30,6 +33,7 @@ function messageHandler(req){
   }
 
   message = name+": "+message
+  message = filter.clean(message);
 
   array.push(message);
 
@@ -49,4 +53,8 @@ app.get('/messages', (req, res) => {
 app.get('/submit', (req, res) => {
   messageHandler(req);
   res.redirect('/?'+req.query.name);
+})
+
+app.get('/name', (req, res) => {
+  res.redirect('/?'+req.query.name)
 })

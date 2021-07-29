@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Message System</title>
+        <title>Easy Chat | Chatroom</title>
         <link rel="stylesheet" href="views/style.css"></link>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
@@ -15,12 +15,12 @@
                 </ul>
             </div> 
 
-            <label for="inputEmail" class="sr-only">Name</label>
-            <input type="text" id="name1" class="form-control" name="name" placeholder="Username" required="">
-            <label for="inputPassword" class="sr-only">Message</label>
+            <label for="name1" class="sr-only">Name</label>
+            <input style="display:none" type="text" id="name1" class="form-control" name="name" placeholder="Username" required="">
+            <label for="message1" class="sr-only">Message</label>
             <input type="text" id="message1" class="form-control" name="message" placeholder="Message" required="" autofocus="">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-        </form>
+        </form>       
 
         <script>                
             var socket = io();
@@ -31,8 +31,10 @@
             }
 
             function addMessages(message){
+                let mArray = message.split(": ");
+                
                 $("#messages").append(`
-                    <li class="list-group-item"> ${message} </li>`
+                    <li class="list-group-item"> <strong>${mArray[0]}‎‎‎‎‎</strong>: ${mArray[1]} </li>`
                 )
 
                 scrollUpdate();
@@ -64,6 +66,8 @@
                 let urlName = window.location.search.split("?");
                 if(urlName[1]){
                     document.getElementById("name1").value = urlName[1]
+                } else {
+                    window.location.assign('views/popup.html');
                 }
             }
 
