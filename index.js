@@ -30,7 +30,7 @@ var array = []
 
 app.use(
   rateLimit({
-    windowMs: 3000, 
+    windowMs: 60000, 
     max: 100,
     message: "You exceeded 100 requests in 1 minute. IDIOT SPAMMER!!!!",
     headers: true,
