@@ -45,7 +45,7 @@ var slowDown = require('express-slow-down');
 
 const apiSlowdown = slowDown({
   windowMs: 60000,
-  delayAfter: 3,
+  delayAfter: 100,
   delayMs: 3*1000,
   keyGenerator: keyGenerator
 });
