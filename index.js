@@ -28,16 +28,18 @@ var array = []
 
 // Rate-limit
 
-const apiLimiter = rateLimit({
-  windowMs: 60000, // 12 hour duration in milliseconds
-  max: 100,
-  handler: function (req, res, /*next*/) {
-    console.log(req.ip)
-    return res.status(429).json({
-      error: 'Too many requests.'
-    })
-  }
-})
+app.enable('trust proxy'); // only use 4 reverse proxies
+
+var keyGenerator = function (req) {
+  return req.publicIp;
+}
+
+const apiLimiter = new RateLimit({
+  windowMs: 60000, // 1 minute
+  max: 100, 
+  message: "Too many requests",
+  keyGenerator: keyGenerator
+});
 
 app.use(apiLimiter);
 
