@@ -6,6 +6,7 @@ const PORT = 80;
 const app = express();
 const socketIO = require('socket.io');
 const encoder = require('htmlencode');
+const rateLimit = require("express-rate-limit");
 
 // Curse Filter
 
@@ -27,10 +28,16 @@ var array = []
 
 // Rate-limit
 
-var ExpressBrute = require('express-brute');
- 
-var store = new ExpressBrute.MemoryStore(); // stores state locally, don't use this in production
-var bruteforce = new ExpressBrute(store);
+const apiLimiter = rateLimit({
+  windowMs: 60000, // 12 hour duration in milliseconds
+  max: 100,
+  message: "Too many requests.",
+  headers: true,
+})
+
+app.use("/messages/", apiLimiter);
+app.use("/submit/", apiLimiter);
+app.use("/name/", apiLimiter);
 
 // App.use
 
@@ -69,11 +76,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views/index.html'));
 })
 
-app.get('/messages', bruteforce.prevent, (req, res) => {
+app.get('/messages', (req, res) => {
   res.send(array);
 })
 
-app.get('/submit', bruteforce.prevent, (req, res) => {
+app.get('/submit', (req, res) => {
   messageHandler(req);
   res.redirect('/?'+req.query.name);
 })
