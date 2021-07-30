@@ -32,6 +32,7 @@ const apiLimiter = rateLimit({
   windowMs: 60000, // 12 hour duration in milliseconds
   max: 100,
   handler: function (req, res, /*next*/) {
+    console.log(req.ip)
     return res.status(429).json({
       error: 'Too many requests.'
     })
