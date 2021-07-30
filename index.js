@@ -7,7 +7,6 @@ const app = express();
 const socketIO = require('socket.io');
 const encoder = require('htmlencode');
 const rateLimit = require("express-rate-limit");
-const requestIp = require('request-ip');
 
 // Curse Filter
 
@@ -29,19 +28,17 @@ var array = []
 
 // Rate-limit
 
-app.use(requestIp.mw());
-
 const apiLimiter = rateLimit({
   windowMs: 60000, // 12 hour duration in milliseconds
   max: 100,
-  keyGenerator: (req, res) => {
-    return req.clientIp
+  handler: function (req, res, /*next*/) {
+    return res.status(429).json({
+      error: 'Too many requests.'
+    })
   }
 })
 
-app.use("/messages/", apiLimiter);
-app.use("/submit/", apiLimiter);
-app.use("/name/", apiLimiter);
+app.use(apiLimiter);
 
 // App.use
 
