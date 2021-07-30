@@ -6,7 +6,6 @@ const PORT = 80;
 const app = express();
 const socketIO = require('socket.io');
 const encoder = require('htmlencode');
-const rateLimit = require("express-rate-limit");
 
 // Curse Filter
 
@@ -28,17 +27,13 @@ var array = []
 
 // Rate-limit
 
-const limiter = rateLimit({
-  windowMs: 60000, 
-  max: 100,
-  message: "You exceeded 100 requests in 1 minute. IDIOT SPAMMER!!!!",
-  headers: true,
-})
+var ExpressBrute = require('express-brute');
+ 
+var store = new ExpressBrute.MemoryStore(); // stores state locally, don't use this in production
+var bruteforce = new ExpressBrute(store);
 
 // App.use
 
-app.use('/submit/', limiter);
-app.use('/messages/', limiter);
 app.use('/views', express.static('views'));
 app.use('/socket.io', express.static('socket.io'));
 
@@ -74,11 +69,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views/index.html'));
 })
 
-app.get('/messages', (req, res) => {
+app.get('/messages', bruteforce.prevent, (req, res) => {
   res.send(array);
 })
 
-app.get('/submit', (req, res) => {
+app.get('/submit', bruteforce.prevent, (req, res) => {
   messageHandler(req);
   res.redirect('/?'+req.query.name);
 })
