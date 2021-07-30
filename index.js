@@ -28,17 +28,17 @@ var array = []
 
 // Rate-limit
 
-app.use(
-  rateLimit({
-    windowMs: 60000, 
-    max: 100,
-    message: "You exceeded 100 requests in 1 minute. IDIOT SPAMMER!!!!",
-    headers: true,
-  })
-);
+const limiter = rateLimit({
+  windowMs: 60000, 
+  max: 100,
+  message: "You exceeded 100 requests in 1 minute. IDIOT SPAMMER!!!!",
+  headers: true,
+})
 
 // App.use
 
+app.use('/submit/', limiter);
+app.use('/messages/', limiter);
 app.use('/views', express.static('views'));
 app.use('/socket.io', express.static('socket.io'));
 
