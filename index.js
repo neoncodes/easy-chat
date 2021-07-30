@@ -30,8 +30,8 @@ var array = []
 
 app.use(
   rateLimit({
-    windowMs: 1 * 60 * 60 * 1000, // 12 hour duration in milliseconds
-    max: 5,
+    windowMs: 1000, // 12 hour duration in milliseconds
+    max: 100,
     message: "You exceeded 100 requests in 12 hour limit!",
     headers: true,
   })
@@ -41,7 +41,6 @@ app.use(
 
 app.use('/views', express.static('views'));
 app.use('/socket.io', express.static('socket.io'));
-app.use(limiter);
 
 // Funcs
 
