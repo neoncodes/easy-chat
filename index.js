@@ -34,7 +34,7 @@ var keyGenerator = function (req) {
   return req.publicIp;
 }
 
-const apiLimiter = new RateLimit({
+const apiLimiter = new rateLimit({
   windowMs: 60000, // 1 minute
   max: 100, 
   message: "Too many requests",
