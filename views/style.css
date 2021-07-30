@@ -11,6 +11,11 @@ body {
     margin-bottom: 10px;
     background: white;
     border: 1px solid rgba(0,0,0,.125);
+    max-width: 530px;
+    overflow-wrap: break-word;
+    display: block;
+    word-break: break-all;
+    white-space: normal;
 }
 
 body {
