@@ -41,7 +41,16 @@ const apiLimiter = new rateLimit({
   keyGenerator: keyGenerator
 });
 
-app.use(apiLimiter);
+var slowDown = require('express-slow-down');
+
+const apiSlowdown = slowDown({
+  windowMs: 60000,
+  delayAfter: 3,
+  delayMs: 3*1000,
+  keyGenerator: keyGenerator
+});
+
+app.use(apiLimiter, apiSlowdown);
 
 // App.use
 
